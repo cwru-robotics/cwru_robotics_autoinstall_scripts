@@ -1,16 +1,20 @@
 #cloud-config
-version: 1
-locale: en_US
-keyboard:
-    layout: us
-identity:
-    realname: "Atlas Account"
-    username: atlas
-    password: $6$f4gP.Oj2rlAfr0RC$gsHO8fJpTzzXWcc0ZEAWSad4k0js5DStUasV6Ae2u/.IDwzhgBtZvLO16eibZAMiEJU8f7P2irjVXPdGR.zLj1
-ssh:
-    install-server: yes
-    allow-pw: yes
-user-data:
-    disable_root: false
-late-commands:
-    - sed -ie 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=30/' /target/etc/default/grub
+autoinstall:
+    version: 1
+    locale: en_US
+    keyboard:
+        layout: us
+    identity:
+        realname: "Atlas Account"
+        username: atlas
+        password: $6$f4gP.Oj2rlAfr0RC$gsHO8fJpTzzXWcc0ZEAWSad4k0js5DStUasV6Ae2u/.IDwzhgBtZvLO16eibZAMiEJU8f7P2irjVXPdGR.zLj1
+    refresh-installer:
+        update: yes
+    packages:
+        - ubuntu-desktop
+        - git
+    ssh:
+        install-server: yes
+        allow-pw: yes
+    user-data:
+        disable_root: false
