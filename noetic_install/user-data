@@ -4,17 +4,18 @@ autoinstall:
     locale: en_US
     keyboard:
         layout: us
+    refresh-installer:
+        update: yes
     apt:
         sources:
             ros.list:
                 source: "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
                 keyid: C1CF 6E31 E6BA DE88 68B1  72B4 F42E D6FB AB17 C654
     identity:
-        realname: "Atlas Account"
-        username: atlas
+        hostname: "atlas_00"
+        realname: "ROS Account"
+        username: rosuser
         password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
-    refresh-installer:
-        update: yes
     ssh:
         install-server: yes
         allow-pw: yes

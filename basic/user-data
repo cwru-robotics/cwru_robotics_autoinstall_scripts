@@ -4,9 +4,12 @@ autoinstall:
     locale: en_US
     keyboard:
         layout: us
+    refresh-installer:
+        update: yes
     identity:
-        realname: "Atlas Account"
-        username: atlas
+        hostname: ubuntu_00
+        realname: "Ubuntu Account"
+        username: ubuntu
         password: $6$f4gP.Oj2rlAfr0RC$gsHO8fJpTzzXWcc0ZEAWSad4k0js5DStUasV6Ae2u/.IDwzhgBtZvLO16eibZAMiEJU8f7P2irjVXPdGR.zLj1
     refresh-installer:
         update: yes
