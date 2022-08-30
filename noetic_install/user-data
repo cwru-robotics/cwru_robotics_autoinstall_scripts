@@ -9,7 +9,7 @@ autoinstall:
     apt:
         sources:
             ros.list:
-                source: "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
+                source: "deb http://packages.ros.org/ros/ubuntu $RELEASE main"
                 keyid: C1CF 6E31 E6BA DE88 68B1  72B4 F42E D6FB AB17 C654
     identity:
         hostname: "atlas_00"
