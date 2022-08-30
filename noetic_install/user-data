@@ -8,7 +8,7 @@ autoinstall:
         update: yes
     apt:
         sources:
-            ros-latest.list:
+            ros.list:
                 source: "deb http://packages.ros.org/ros/ubuntu focal main"
                 key: | 
                     -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -41,7 +41,6 @@ autoinstall:
                     WE+F5FaIKwb72PL4rLi4
                     =i0tj
                     -----END PGP PUBLIC KEY BLOCK-----                
-                # keyid: C1CF 6E31 E6BA DE88 68B1  72B4 F42E D6FB AB17 C654
     identity:
         hostname: "atlas_00"
         realname: "ROS Account"
