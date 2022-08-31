@@ -6,8 +6,7 @@ autoinstall:
         layout: us
     early-commands:
         - echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list
-        - |
-            echo"
+        - echo "
                     -----BEGIN PGP PUBLIC KEY BLOCK-----
                     Version: GnuPG v1
 
