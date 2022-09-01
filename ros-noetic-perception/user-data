@@ -57,7 +57,7 @@ autoinstall:
         - git
         - ros-noetic-perception
     late-commands:
-      	- echo "source /opt/ros/noetic/setup.bash" >> /target/etc/bash.bashrc
+        - echo "source /opt/ros/noetic/setup.bash" >> /target/etc/bash.bashrc
     user-data:
         disable_root: true
 
