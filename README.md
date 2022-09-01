@@ -1,6 +1,6 @@
 # `cwru_robotics_autoinstall_scripts` Package
 
-This repository provides autoinstall files that will allow nearly automated installations for robots and workstations used by CWRU Robotics researchers.
+This repository provides autoinstall files that automates Ubuntu/ROS installations for robots and workstations for CWRU Robotics researchers.
 
 This package is still under development.  These scripts are not well verified at this time.
 
@@ -8,41 +8,71 @@ This package is still under development.  These scripts are not well verified at
 
 As of Ubuntu 20.04, [Ubuntu Server](https://ubuntu.com/download/server) can use an auto-installation mechanism that includes being able to retrieve the installation configuration from the internet.  Ubuntu Server can be converted into Ubuntu Desktop by installing the `ubuntu-desktop` package.  More information about how to create and use the autoinstall capabilities of Ubuntu Server can be found on the [Ubuntu website](https://ubuntu.com/server/docs/install/autoinstall).
 
-This repository will have directories for various types of installations.  Find the URL to the **RAW** `user-config` file.  Truncate the filename from that URL and add it to the kernel commandline of the image being installed.
+This repository will have directories for various types of installations.  The autoinstall requires the URI of the location of the **RAW** `user-data` and `meta-data` files.  The URL is [`raw.githubusercontent.com`](http://raw.githubusercontent.com), not [`github.com`](https://github.com).
 
-During the boot process of the Ubuntu Server live CD, hold the Shift key down.  A boot menu should appear.  Press F6, and escape.  Then add the following line to the boot configuration text:
+During the boot process of the Ubuntu Server Live CD, hold the Shift key down.  A boot menu should appear.  Press F6, and escape.  The kernel command line is available for editing.  Add the following line to the boot configuration text:
 
-> `autoinstall ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/main/<directory_name>/` 
+> `autoinstall ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/` 
 
-Where the `<directory_name>` is in the repository and has a configuration ready.
+Where the `<install_type>` is in the repository that contains at least `user-data` and `meta-data` files.  The former contains the installation information, while the latter is generally expected to be empty.  It is required that `meta-data` be present in the directory even if empty.
 
-Each directory must include both a `user-config` and a `meta-data` file.  The former contains most of the installation information, while the latter is generally expected to be empty.
+Currently, the `hostname` will need to be updated when the system is ready to run.
 
-The hostname will need to be updated when the system is ready to run.
+### Intallations Types
+
+There are three types of installations provided by this repository in this branch which is directed at Ubuntu Server 20.04 Focal Fossa and ROS Noetic Ninjemys.  The naming is based on naming on the ROS installation packages.  All three, however, include the installation of GIT.  All installations all prevent root from being able to remotely login and have `sshd` activated.
+
+The installation names are based on the ROS installation meta-packages defined in [REP 150](https://ros.org/reps/rep-0150.html).
+
+#### `ros-noetic-desktop-full`
+
+This installation is intended for desktop computers with graphics.  Ubuntu Server is a minimal, non GUI installation.  This installation adds the `ubunut-desktop` meta-package that functionally makes the installation the same as Ubuntu Desktop.  The ROS `ros-noetic-desktop-full` meta-package is installed.
+
+Snap is used to install the VS Code IDE.
+
+#### `ros-noetic-perception`
+
+The `ros-noetic-perception` installation meta-package is a "capability variant" ROS installation.  ROS discourages to have graphics dependencies.  It does have image manipulation packages, but no graphical outputs.  It is intended for computers that are installed on robots that are not expected to have GUI and typically run "headless."
+
+#### `ros-noetic-robot`
+
+The `ros-noetic-robot` installation meta-package is prohibited from including graphics dependencies.  It is intended for lower-level, embedded computers installed on robots.
+
+
+
+## Information on `autoinstall` using `cloud-config`
+
+The `autoinstall` protocol is based on the `cloud-config` system.  There are three possible files that are used by `cloud-config` to automate the installation process.  Ubuntu provides  [documentation](https://ubuntu.com/server/docs/install/autoinstall-reference) for `autoinstall` for Ubuntu Server (beginning with 20.04) is available .  There is also [documentation](https://cloudinit.readthedocs.io/en/latest/) that provides higher level information for `cloud-config`.
 
 ### `user-data`
 
-This is the file that contains the most of the auto-installation information at this time.  It is a YAML file.  Use the [Ubuntu reference](https://ubuntu.com/server/docs/install/autoinstall-reference) to understand the structure of the file. 
+This is the file that contains the most of the auto-installation information at this time.  It is a YAML file.  Use the [Ubuntu reference](https://ubuntu.com/server/docs/install/autoinstall-reference) to understand the structure of the file as it is used for installing Ubuntu (Server 20.04 and newer?). 
 
-The most basic file contains "identity" the hostname of the computer, the real name of the user, username, and the password "crypted".  The basic command to get a crypted password is:
+The most basic file contains the `identity` tag that sets the hostname of the computer, the real name of the user, username, and the password "crypted".  OpenSSL (`openssl`) can be used to generate a "crypted" password that can be used by the `passwd` file.  This method of providing a password is secure since it is impossible to reconstruct a password from its HASH value.  There are several cryptographic hash algorithms that can be used.  The algorithm is indicated by the number in the second position of the resulting HASH.  View the man page for OpenSSL to learn about the available algorithms and how they are used.  The SHA512 algorithm is indicated by the `-6` element.
 
-> ```printf 'ubuntu' | openssl passwd -6 -stdin```
+> `openssl passwd -6 -salt 'FhcddHFVZ7ABA4Gi' ubuntu`
+
+This command should result in the HASH shown below.
 
 > `$6$FhcddHFVZ7ABA4Gi$XOmu9O8SDaBexz6Zw0FCjeZJbwPP.OTK7TTZp8G/BydFXvlpHQxuuMHPzZ3IGgt3u5n73a1EkysSCendbXCDG1`
 
-The `printf` element ensures that no extra bytes are included in the password being crypted.  This command is randomly salted, so the it highly unlikely that this will be the string returnw when run again.
+The salt added to the command allows the output to be repeatable.  (The salt algorithm is identified by the `6` and the salt is shown between the second and third `$`.)  It is better to allow `openssl` to generate random salt each time it runs.
 
-It is possible to add a specific salt so that the output can be verified to be returning what it should.  To reproduce the crypted password shown here add the following as the salt: `FhcddHFVZ7ABA4Gi`.  (The salt is between the `$6$` and the next `$`.)
+It has also become a standard procedure to not include the password on the command line as it can be viewed by any user through the process list.  There are various ways to keep improve the security of entering the password.  One way is to take the password on the STDIN.  This is shown below.
 
-> ```printf 'ubuntu' | openssl passwd -6 -salt 'FhcddHFVZ7ABA4Gi' -stdin```
+> `openssl passwd -6 -stdin <<< ubuntu`
 
+The above command can be used to generate the cryptographic HASH of a password that can be included in a publicly available document.  The password cannot be determined from the HASH.  In this way, the username and password information in the automated installation script with minimal security compromise.
 
-The output should now be the same as above.  It is best practice to allow the salt to be generated randomly (or at least not use the same salt repeatedly).
+The password(s) in this repository is not `ubuntu` and should not ever appear in the repository.
+
+The `user-data` file also adds the ROS repository to `apt` to allow it to be installed locally.  It also configures `sshd` and adds the running of the ROS `setup.bash` to the `/etc/bash.bashrc` so any and all users will be automatically configured for using ROS.
 
 ### `meta-data`
 
-This file is emtpy at this time.  It must be present in the system, however, in order for the automated installation to work.  It can be and is empty.
+This file is empty at this time.  It must be present in the system, however, in order for the automated installation to work.  It can be and is empty.
 
 ### `vendor-data`
 
-This is also a file that is requested during the boot process.  It may not need to be present.  If present, it can be be empty.
+This is also a file that is requested during the boot process.  Unlike `user-data` and `meta-data` its absence will not cause an error.  If present, it can be be empty.
+

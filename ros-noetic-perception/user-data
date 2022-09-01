@@ -5,15 +5,15 @@ autoinstall:
     keyboard:
         layout: us
     early-commands:
-        - echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list
+        - echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
         - curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
         - apt update
     refresh-installer:
-        update: yes
+        update: true
     apt:
         sources:
             ros-latest.list:
-                source: "deb http://packages.ros.org/ros/ubuntu focal main"
+                source: "deb http://packages.ros.org/ros/ubuntu $RELEASE main"
                 key: | 
                     -----BEGIN PGP PUBLIC KEY BLOCK-----
                     Version: GnuPG v1
@@ -46,16 +46,18 @@ autoinstall:
                     =i0tj
                     -----END PGP PUBLIC KEY BLOCK-----                
     identity:
-        hostname: "atlas_00"
+        hostname: "cwru-robotics-00"
         realname: "ROS Account"
         username: rosuser
         password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
     ssh:
-        install-server: yes
-        allow-pw: yes
+        install-server: true
+        allow-pw: true
     packages:
-        - ubuntu-desktop
         - git
-        - ros-noetic-desktop-full
+        - ros-noetic-perception
+    late-commands:
+      	- echo "source /opt/ros/noetic/setup.bash" >> /target/etc/bash.bashrc
     user-data:
-        disable_root: false
+        disable_root: true
+
