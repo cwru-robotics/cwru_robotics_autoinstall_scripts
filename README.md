@@ -14,9 +14,24 @@ During the boot process of the Ubuntu Server Live CD, hold the Shift key down.  
 
 > `autoinstall ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/` 
 
+If the Grub2 Boot Menu appears, the process is slightly different.  Press the "e" key to edit the "Ubuntu Installation" option.  On the line that begins with "linux", type the text below at the end of the line.  Notice here that there is a backslash (\) before the semicolon between "nocloud-net" and ";".
+
+> `autoinstall ds=nocloud-net\;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/` 
+
+
 Where the `<install_type>` is in the repository that contains at least `user-data` and `meta-data` files.  The former contains the installation information, while the latter is generally expected to be empty.  It is required that `meta-data` be present in the directory even if empty.
 
 Currently, the `hostname` will need to be updated when the system is ready to run.
+
+### Failed Attempt
+
+If the installation shows a menu to select the language for the installation, the autoinstallation has failed.  Before trying again review the logs.  
+
+While the language selection option is still up, press CTRL+ALT+F2.  This switches to a second virtual termina and a command prompt should come up.  Review the error log for the cloud-init autoinstallation with the following command: `less /var/log/cloud-init.log`.  Look through the file for references to the `meta-data` file downloaded from the URL above.  That file is downloaded first.  If it is not there, the problem is with contacting the server holding the files (GitHub).  If it is there, check just after it to verify that the `user-data` file was downloaded successfully.  If they are both downloaded, that indicates the problem is with the `user-data` file.  It would be unusual for `meta-data` to have downloaded successfull and `user-data` to have failed. 
+
+It may be necessary to review the syslog as well: `less /var/log/syslog`.  The kernel command line parameters can be found in this file.  Check to see that the autoinstall line shown above is complete and accurate in this file.
+
+These logs can be placed on another computer using `ssh/scp` if there is a computer configured to accept `ssh` connections.
 
 ### Intallations Types
 
