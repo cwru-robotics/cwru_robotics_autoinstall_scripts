@@ -57,8 +57,9 @@ autoinstall:
         - ubuntu-desktop
         - git
         - ros-noetic-desktop-full
-    snap:
-        - code
+    snaps:
+        - name: code
+          classic: true
     late-commands:
         - echo "source /opt/ros/noetic/setup.bash" >> /target/etc/bash.bashrc
     user-data:
