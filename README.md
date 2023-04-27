@@ -27,13 +27,22 @@ Currently, the `hostname` will need to be updated when the system is ready to ru
 
 If the installation shows a menu to select the language for the installation, the autoinstallation has failed.  Before trying again review the logs.  
 
-While the language selection option is still up, press CTRL+ALT+F2.  This switches to a second virtual termina and a command prompt should come up.  Review the error log for the cloud-init autoinstallation with the following command: `less /var/log/cloud-init.log`.  Look through the file for references to the `meta-data` file downloaded from the URL above.  That file is downloaded first.  If it is not there, the problem is with contacting the server holding the files (GitHub).  If it is there, check just after it to verify that the `user-data` file was downloaded successfully.  If they are both downloaded, that indicates the problem is with the `user-data` file.  It would be unusual for `meta-data` to have downloaded successfull and `user-data` to have failed. 
+While the language selection option is still up, press CTRL+ALT+F2.  This switches to a second virtual termina and a command prompt should come up.  Review the error log for the cloud-init autoinstallation with the following command: `less /var/log/cloud-init.log`.  Look through the file for references to the `meta-data` file downloaded from the URL above.  That file is downloaded first.  If it is not there, the problem is with contacting the server holding the files (GitHub).  If it is there, check just after it to verify that the `user-data` file was downloaded successfully.  If they are both downloaded, that indicates the problem is with the `user-data` file.  It would be unusual for `meta-data` to have downloaded successfully and `user-data` to have failed. 
 
 It may be necessary to review the syslog as well: `less /var/log/syslog`.  The kernel command line parameters can be found in this file.  Check to see that the autoinstall line shown above is complete and accurate in this file.
 
 These logs can be placed on another computer using `ssh/scp` if there is a computer configured to accept `ssh` connections.
 
-### Intallations Types
+### Set IP Address Manually
+
+If an IP address has not been configured before the install script attempts to download the configuration file, the download will fail (a known bug in cloud-init exacerbated by the slow allocation of IP addresses by the CWRU network).  It is possible to manually specify the IP address and other information at the kernel command line.  It goes between the `---` and the `autoinstall ds=no...`.
+
+> ```ip=<ip_address>::<gateway>:<netmask>:<hostname>:<network_interface>:none:<dns>[:dns2]```
+
+For the `Atlas#` computers in the Glennan 210 Laboratory which have static IP addresses assigned, retrieve these values from the computer before attempting the installation.  Either boot the computer like normal or boot into the live Ubuntu trial on the USB drive, then go to the Network Settings and write down IP addresses for the computer, gateway, netmask (generally 255.255.255.0), and at least one DNS server.  For the `Atlas#` computers, the network interface is `eno1`.
+
+
+## Installations Types
 
 There are three types of installations provided by this repository in this branch which is directed at Ubuntu Server 20.04 Focal Fossa and ROS Noetic Ninjemys.  The naming is based on naming on the ROS installation packages.  All three, however, include the installation of GIT.  All installations all prevent root from being able to remotely login and have `sshd` activated.
 
@@ -41,15 +50,15 @@ The installation names are based on the ROS installation meta-packages defined i
 
 #### `ros-noetic-desktop-full`
 
-This installation is intended for desktop computers with graphics.  Ubuntu Server is a minimal, non GUI installation.  This installation adds the `ubunut-desktop` meta-package that functionally makes the installation the same as Ubuntu Desktop.  The ROS `ros-noetic-desktop-full` meta-package is installed.
+This installation is intended for desktop computers with graphics.  Ubuntu Server is a minimal, non GUI installation.  This installation adds the `ubuntu-desktop` meta-package that functionally makes the installation the same as Ubuntu Desktop.  The ROS `ros-noetic-desktop-full` meta-package is installed.
 
 Snap is used to install the VS Code IDE.
 
-#### `ros-noetic-perception`
+### `ros-noetic-perception`
 
 The `ros-noetic-perception` installation meta-package is a "capability variant" ROS installation.  ROS discourages to have graphics dependencies.  It does have image manipulation packages, but no graphical outputs.  It is intended for computers that are installed on robots that are not expected to have GUI and typically run "headless."
 
-#### `ros-noetic-robot`
+### `ros-noetic-robot`
 
 The `ros-noetic-robot` installation meta-package is prohibited from including graphics dependencies.  It is intended for lower-level, embedded computers installed on robots.
 
