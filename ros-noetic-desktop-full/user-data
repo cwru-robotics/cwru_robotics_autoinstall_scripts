@@ -57,6 +57,7 @@ autoinstall:
         - ubuntu-desktop
         - git
         - ros-noetic-desktop-full
+        - python3-rosdep
     snaps:
         - name: code
           classic: true
