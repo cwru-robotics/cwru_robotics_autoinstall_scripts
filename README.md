@@ -41,6 +41,26 @@ If an IP address has not been configured before the install script attempts to d
 
 For the `Atlas#` computers in the Glennan 210 Laboratory which have static IP addresses assigned, retrieve these values from the computer before attempting the installation.  Either boot the computer like normal or boot into the live Ubuntu trial on the USB drive, then go to the Network Settings and write down IP addresses for the computer, gateway, netmask (generally 255.255.255.0), and at least one DNS server.  For the `Atlas#` computers, the network interface is `eno1`.
 
+### Post-Installation
+
+Clean-up is required after this installation method.  After rebooting the computer, the hostname must be changed:
+
+> ```sudo pico /etc/hostname```
+
+Also, remove the `GRUB_CMDLINE_LINUX` entry in the `/etc/default/grub` file that contains the extended kernel command line that specifies the IP Address.  The following command must be run after this file is saved.
+
+> ```sudo update-grub```
+
+Finally, the IP address may need to be reset if the Manual IP Address method was used above.  The following commands should accomplish this:
+
+> ```cloud-init clean --logs```
+
+> ```cloud-init init --local```
+
+> ```cloud-init clean -r```
+
+
+The final command reboots the computer.  It should be 
 
 ## Installations Types
 
