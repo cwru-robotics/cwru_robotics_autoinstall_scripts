@@ -10,10 +10,12 @@ autoinstall:
     keyboard:
         layout: us
     user-data:
-        disable_root: true
+        disable_root: false
         users:
-            - name: 'ros_user'
-              password: '$6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.'
+            - name: 'engradmin'
+              passwd: '$6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.'
               lock_passwd: false
+              uid: 1010
+              group: adm, cdrom, sudo, dip, plugdev, ldapadmin, sambashare
 
 
