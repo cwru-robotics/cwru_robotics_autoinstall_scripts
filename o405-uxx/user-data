@@ -2,15 +2,16 @@
 autoinstall:
     version: 1
     locale: en_US
+    identity:
+        hostname: "cwru-robotics-00"
+        realname: "ROS Account"
+        username: rosuser
+        password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
     keyboard:
         layout: us
     user-data:
         disable_root: true
         users:
-            - name: engradmin
-              password: '$6$s0gt0JHx$SlGGNJwcAGZldJwcRU0JLTMMmUOlEHDJd6wLSQ7BTEi2Bl9G7xGH/6zgyfPpP0i/Usle2pGXRkQRGanBdh.RG1'
-              groups: [adm, cdrom, sudo, dip, plugdev, ldapadmin, sambashare]
-              lock_passwd: false
             - name: ros_user
               password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
               lock_passwd: false
