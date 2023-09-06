@@ -5,15 +5,15 @@ autoinstall:
     identity:
         hostname: "cwru-robotics-00"
         realname: "ROS Account"
-        username: rosuser
-        password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
+        username: 'rosuser'
+        password: '$6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.'
     keyboard:
         layout: us
     user-data:
         disable_root: true
         users:
-            - name: ros_user
-              password: $6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.
+            - name: 'ros_user'
+              password: '$6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.'
               lock_passwd: false
 
 
