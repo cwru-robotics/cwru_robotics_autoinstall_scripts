@@ -10,18 +10,22 @@ As of Ubuntu 20.04, [Ubuntu Server](https://ubuntu.com/download/server) can use 
 
 This repository will have directories for various types of installations.  The autoinstall requires the URI of the location of the **RAW** `user-data` and `meta-data` files.  The URL is [`raw.githubusercontent.com`](http://raw.githubusercontent.com), not [`github.com`](https://github.com).
 
-During the boot process of the Ubuntu Server Live CD, hold the Shift key down.  A boot menu should appear.  Press F6, and escape.  The kernel command line is available for editing.  Add the following line to the boot configuration text:
+The bootloader could be either the graphical or the command line version of Grub2.  The Linux kernel command line must be edited in either version to use the `autoinstall` script.  The way to get to the place to edit the command line in the two Grub versions differs.  There is no way to determine which will appear beforehand.  When booting using the Ubuntu Server Live CD, hold the `Shift` key down.  The bootloader menu should come up.
 
-> `autoinstall ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/` 
+- Graphical Grub
+  - Press F6, and escape.  The kernel command line is available for editing.  
 
-If the Grub2 Boot Menu appears, the process is slightly different.  Press the "e" key to edit the "Ubuntu Installation" option.  On the line that begins with "linux", type the text below at the end of the line.  Notice here that there is a backslash (\) before the semicolon between "nocloud-net" and ";".
+- Command Line Grub
+  - Select the basic installation item and press the "e" key.
+  - Find the line that ends in `---`.
+ 
+In either instance, there should be three dashes, `---`.  After the dashes add the following line:
 
-> `autoinstall ds=nocloud-net\;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/` 
+> `autoinstall `ds=nocloud-net;s=/cdrom/;h=<new_hostname>`
 
+It is also possible to use an autoinstall script directly from the GitHub repository:
 
-Where the `<install_type>` is in the repository that contains at least `user-data` and `meta-data` files.  The former contains the installation information, while the latter is generally expected to be empty.  It is required that `meta-data` be present in the directory even if empty.
-
-Currently, the `hostname` will need to be updated when the system is ready to run.
+> `autoinstall 'ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/;h=<new_hostname>'` 
 
 ### Failed Attempt
 
@@ -41,13 +45,9 @@ If an IP address has not been configured before the install script attempts to d
 
 For the `Atlas#` computers in the Glennan 210 Laboratory which have static IP addresses assigned, retrieve these values from the computer before attempting the installation.  Either boot the computer like normal or boot into the live Ubuntu trial on the USB drive, then go to the Network Settings and write down IP addresses for the computer, gateway, netmask (generally 255.255.255.0), and at least one DNS server.  For the `Atlas#` computers, the network interface is `eno1`.
 
-### Post-Installation
+#### Post-Installation
 
-Clean-up is required after this installation method.  After rebooting the computer, the hostname must be changed:
-
-> ```sudo pico /etc/hostname```
-
-Also, remove the `GRUB_CMDLINE_LINUX` entry in the `/etc/default/grub` file that contains the extended kernel command line that specifies the IP Address.  The following command must be run after this file is saved.
+Clean-up is required after when manually specifying the IP address.  Remove the `GRUB_CMDLINE_LINUX` entry in the `/etc/default/grub` file that contains the extended kernel command line that specifies the IP Address.  The following command must be run after this file is saved.
 
 > ```sudo update-grub```
 
@@ -82,11 +82,9 @@ The `ros-noetic-perception` installation meta-package is a "capability variant" 
 
 The `ros-noetic-robot` installation meta-package is prohibited from including graphics dependencies.  It is intended for lower-level, embedded computers installed on robots.
 
-
-
 ## Information on `autoinstall` using `cloud-config`
 
-The `autoinstall` protocol is based on the `cloud-config` system.  There are three possible files that are used by `cloud-config` to automate the installation process.  Ubuntu provides  [documentation](https://ubuntu.com/server/docs/install/autoinstall-reference) for `autoinstall` for Ubuntu Server (beginning with 20.04) is available .  There is also [documentation](https://cloudinit.readthedocs.io/en/latest/) that provides higher level information for `cloud-config`.
+The `autoinstall` protocol is based on the `cloud-config` system.  There are three possible files that are used by `cloud-config` to automate the installation process.  Ubuntu provides  [documentation](https://ubuntu.com/server/docs/install/autoinstall-reference) for `autoinstall` for Ubuntu Server (beginning with 20.04) is available.  There is also [documentation](https://cloudinit.readthedocs.io/en/latest/) that provides higher level information for `cloud-config`.
 
 ### `user-data`
 
@@ -106,17 +104,19 @@ It has also become a standard procedure to not include the password on the comma
 
 > `openssl passwd -6 -stdin <<< ubuntu`
 
-The above command can be used to generate the cryptographic HASH of a password that can be included in a publicly available document.  The password cannot be determined from the HASH.  In this way, the username and password information in the automated installation script with minimal security compromise.
+The above command can be used to generate the cryptographic HASH of a password that can be included in a publicly available document.  The password cannot be determined from the HASH.  In this way, the username and password information in the automated installation script is still relatively secure and presents a minimal (but non-zero) security compromise.
 
-The password(s) in this repository is not `ubuntu` and should not ever appear in the repository.
+The password(s) in this repository is not `ubuntu` and the actual password itself should not ever appear in the repository as that would present a significant security compromise.
 
 The `user-data` file also adds the ROS repository to `apt` to allow it to be installed locally.  It also configures `sshd` and adds the running of the ROS `setup.bash` to the `/etc/bash.bashrc` so any and all users will be automatically configured for using ROS.
 
-### `meta-data`
+There is a second way to specify users under a `user-data` key within the `autoinstall` key.  (Yes, a `user-data` key within the `user-data` file.)  This key actually passes the information off to `cloud-init`.  Consult the `cloud-init` documentation for using that method.  Keep in mind, however, to put both the `username` and `passwd` values in quotes.  (Also note that there is some documentation on the internet that incorrectly shows an example using the key `password` for a password hash instead of `passwd`.  That will not work. 
 
-This file is empty at this time.  It must be present in the system, however, in order for the automated installation to work.  It can be and is empty.
+### `meta-data`is s
+
+This file is empty at this time.  It must be present in the system, however, in order for the automated installation to work.  It can be and is empty in these installations.
 
 ### `vendor-data`
 
-This is also a file that is requested during the boot process.  Unlike `user-data` and `meta-data` its absence will not cause an error.  If present, it can be be empty.
+This is also a file that is requested during the boot process.  Unlike `user-data` and `meta-data` its absence will not cause an error.  If present, it can  be empty.
 
