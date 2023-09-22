@@ -21,7 +21,7 @@ The bootloader could be either the graphical or the command line version of Grub
  
 In either instance, there should be three dashes, `---`.  After the dashes add the following line:
 
-> `autoinstall `ds=nocloud-net;s=/cdrom/;h=<new_hostname>`
+> `autoinstall 'ds=nocloud-net;s=/cdrom/;h=<new_hostname>'`
 
 It is also possible to use an autoinstall script directly from the GitHub repository:
 
