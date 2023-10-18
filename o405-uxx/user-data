@@ -66,23 +66,67 @@ autoinstall:
         - sssd-ldap
         - krb5-user
     snaps:
+        - name: firefox
+        - name: gnome-3-38-2004
+        - name: gtk-common-themes
+        - name: snap-store
+        - name: snapd-desktop-integration
         - name: code
           classic: true
     late-commands:
-        - echo "source /opt/ros/noetic/setup.bash" >> /target/etc/bash.bashrc
-        - echo "saabd.eecs.cwru.edu:/mgc        /mgc    nfs     rsize=8192,wsize=8192,timeo=14,intr" >> /target/etc/fstab
+        - >-
+          curtin in-target -- 
+          echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
+        - >-
+          curtin in-target -- 
+          echo "saabd.eecs.cwru.edu:/mgc        /mgc    nfs     rsize=8192,wsize=8192,timeo=14,intr" >> /etc/fstab
+        # Enable the boot splash
+        - >-
+          curtin in-target --
+          sed -i /etc/default/grub -e
+          's/GRUB_CMDLINE_LINUX_DEFAULT=".*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/'
+        - curtin in-target -- update-grub
+
+        # Let NetworkManager handle network
+        - rm /target/etc/netplan/00-installer-config*yaml
+        - >-
+          printf "network:\n  version: 2\n  renderer: NetworkManager"
+          > /target/etc/netplan/01-network-manager-all.yaml
+        # Keep cloud-init, as it performs some of the installation on first boot.
+        - curtin in-target -- apt-get install -y cloud-init
+
+        # Finally, remove things only installed as dependencies of other things
+        # we have already removed.
+        - curtin in-target -- apt-get autoremove -y
+
+        # A postinstall script may optionally be used for further install
+        # customization. Deploy this postinstall.sh script on the webserver.
+        # - wget -O /target/postinstall.sh http://192.168.0.2/postinstall.sh
+        # - curtin in-target -- bash /postinstall.sh
+        # - rm /target/postinstall.sh
+
     user-data:
         disable_root: false
         users:
+            # Engineering Admin local account
             - name: 'engradmin'
               passwd: '$6$s0gt0JHx$SlGGNJwcAGZldJwcRU0JLTMMmUOlEHDJd6wLSQ7BTEi2Bl9G7xGH/6zgyfPpP0i/Usle2pGXRkQRGanBdh.RG1'
               lock_passwd: false
               uid: 1000
+              shell: /bin/bash
               groups: adm, cdrom, sudo, dip, plugdev, ldapadmin, sambashare
-            - name: 'ros_user'
+            # Local, secondary admin account for ROS administration
+            - name: 'ros_admin'
               passwd: '$6$3bI3uxPnnUm/nIGI$muiqah8wB8IzTFAy9SEhsjBHoUrHsunePcukypulfAWYue2R2F5.yeZgbTC9gDwAQvk791QiB9FRPJ00t/Pc9.'
               lock_passwd: false
               uid: 1010
+              shell: /bin/bash
               groups: adm, cdrom, sudo, dip, plugdev, ldapadmin, sambashare
+            # Local ROS user
+            - name: 'ros_user'
+              passwd: '$6$P48EnlCy8XBo8Sin$QmF9IXQykICvAe3hD57EDHYYRDLGMyGXP09UgXVQxcaaWnVhVV5fNzjI4Rf4BV0v/hgdiJK8SEYRFodbKYFKJ.'
+              lock_passwd: false
+              uid: 1011
+              shell: /bin/bash
 
 
