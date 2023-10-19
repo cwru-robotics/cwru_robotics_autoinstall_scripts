@@ -5,12 +5,14 @@ autoinstall:
     keyboard:
         layout: us
     early-commands:
+        # Add ROS to the installation
         - echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
         - curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
         - apt update
     refresh-installer:
         update: true
     apt:
+        ## Add ROS the the installed system
         sources:
             ros-latest.list:
                 source: "deb http://packages.ros.org/ros/ubuntu $RELEASE main"
@@ -45,14 +47,24 @@ autoinstall:
                     WE+F5FaIKwb72PL4rLi4
                     =i0tj
                     -----END PGP PUBLIC KEY BLOCK-----                
+
     ssh:
         install-server: true
         allow-pw: true
+
     packages:
+        # Make this an Ubuntu Desktop-like installation
         - ubuntu-desktop
+
+        # Add tools for ROS development
         - git
         - ros-noetic-desktop-full
         - python3-rosdep
+
+        # Add NFS support
+        - nfs-common
+
+        # Add tools consistent with previous o405 computers
         - sssd-ad
         - sssd
         - sssd-tools
@@ -65,21 +77,26 @@ autoinstall:
         - ldap-utils
         - sssd-ldap
         - krb5-user
+        - sshfs
+
     snaps:
+        # For Ubuntu Desktop-like installation
         - name: firefox
         - name: gnome-3-38-2004
         - name: gtk-common-themes
         - name: snap-store
         - name: snapd-desktop-integration
+
+        # For ROS development
         - name: code
           classic: true
+
     late-commands:
-        - >-
-          curtin in-target -- 
-          echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
-        - >-
-          curtin in-target -- 
-          echo "saabd.eecs.cwru.edu:/mgc        /mgc    nfs     rsize=8192,wsize=8192,timeo=14,intr" >> /etc/fstab
+        # # Make all users automatically ROS aware
+        # - >-
+        #   curtin in-target -- 
+        #   echo "source /opt/ros/noetic/setup.bash" >> /etc/bash.bashrc
+
         # Enable the boot splash
         - >-
           curtin in-target --
@@ -92,6 +109,7 @@ autoinstall:
         - >-
           printf "network:\n  version: 2\n  renderer: NetworkManager"
           > /target/etc/netplan/01-network-manager-all.yaml
+
         # Keep cloud-init, as it performs some of the installation on first boot.
         - curtin in-target -- apt-get install -y cloud-init
 
@@ -104,6 +122,9 @@ autoinstall:
         # - wget -O /target/postinstall.sh http://192.168.0.2/postinstall.sh
         # - curtin in-target -- bash /postinstall.sh
         # - rm /target/postinstall.sh
+        - wget -O /target/postinstall.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/postinstall.sh
+        - curting in-target --bash /postinstall.sh
+        - rm /target/postinstall.sh
 
     user-data:
         disable_root: false
