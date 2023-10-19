@@ -27,6 +27,10 @@ echo "rm -rf ~/*_ws" >> /etc/skel/.bash_logout
 echo "#!/usr/bin/env sh" > /etc/cron.hourly/logout_stale.sh
 echo "kill -9 `who -u | gawk '/old/ {print $6}' - `" >> /etc/cron.hourly/logout_stale.sh
 
+# Update the system
+apt-get update
+apt-get upgrade -y
+
 # Add LabHome stuff (seems broken)
 wget -O /usr/bin/mountHomePrompt.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mountHomePrompt.sh
 wget -O /usr/bin/mountHomeGUI.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mountHomeGUI.sh
@@ -37,7 +41,7 @@ echo "/usr/bin/mountHomePrompt.sh" /etc/skel/.profile
 
 # Build custom ROS stuff for now
 mkdir -p ros_ws/src
-cp ros_ws/src
+cd ros_ws/src
 git clone https://github.com/cwru-eecs-275/stdr_simulator.git
 git clone https://github.com/cwru-eecs-373/cwru_ariac_2019.git
 
@@ -46,8 +50,9 @@ cd ../
 source /opt/ros/noetic/setup.bash
 
 rosdep init
+rosdep update
 
-rosdep install --from-paths-src --ignore-src -r -y
+rosdep install --from-paths src --ignore-src -r -y
 
 catkin_make
 
