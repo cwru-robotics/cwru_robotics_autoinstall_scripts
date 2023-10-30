@@ -52,45 +52,6 @@ autoinstall:
         install-server: true
         allow-pw: true
 
-    packages:
-        # Make this an Ubuntu Desktop-like installation
-        - ubuntu-desktop
-
-        # Add tools for ROS development
-        - git
-        - ros-noetic-desktop-full
-        - python3-rosdep
-
-        # Add NFS support
-        - nfs-common
-
-        # Add tools consistent with previous o405 computers
-        - sssd-ad
-        - sssd
-        - sssd-tools
-        - libnss-sss
-        - libpam-sss
-        - realmd
-        - samba-common-bin
-        - adcli
-        - sssd-ldap
-        - ldap-utils
-        - sssd-ldap
-        - krb5-user
-        - sshfs
-
-    snaps:
-        # For Ubuntu Desktop-like installation
-        - name: firefox
-        - name: gnome-3-38-2004
-        - name: gtk-common-themes
-        - name: snap-store
-        - name: snapd-desktop-integration
-
-        # For ROS development
-        - name: code
-          classic: true
-
     late-commands:
         # # Make all users automatically ROS aware
         # - >-
