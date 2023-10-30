@@ -4,7 +4,7 @@ echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 apt update
 
-apt install ubuntu-desktop git ros-noetic-desktop-full python3-rosdep nfs-common sssd-ad sssd sssd-tools libnss-sss libpam-sss realmd samba-common-bin adcli sssd-ldap ldap-utils sssd-ldap krb5-user sshfs
+apt install -y ubuntu-desktop git ros-noetic-desktop-full python3-rosdep nfs-common sssd-ad sssd sssd-tools libnss-sss libpam-sss realmd samba-common-bin adcli sssd-ldap ldap-utils sssd-ldap krb5-user sshfs
 
 snap install firefox gnome-3-38-2004 gtk-common-themes snap-store snapd-desktop-integration
 snap install --classic code 
