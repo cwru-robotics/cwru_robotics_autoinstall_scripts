@@ -84,7 +84,7 @@ autoinstall:
         # - curtin in-target -- bash /postinstall.sh
         # - rm /target/postinstall.sh
         - wget -O /target/postinstall.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/postinstall.sh
-        - curting in-target --bash /postinstall.sh
+        - curtin in-target --bash /postinstall.sh
         - rm /target/postinstall.sh
 
     user-data:
