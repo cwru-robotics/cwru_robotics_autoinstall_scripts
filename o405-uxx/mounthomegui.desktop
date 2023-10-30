@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/mountHomeGUI.sh
+Name=MountHomeDrive
+OnlyShowIn=GNOME;Unity;
+NoDisplay=true
+X-GNOME-Autostart-enabled = true

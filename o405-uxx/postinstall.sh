@@ -32,6 +32,7 @@ apt-get update
 apt-get upgrade -y
 
 # Add LabHome stuff (seems broken)
+wget -O /etc/xdg/autostart/mounthomegui.desktop http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mounthomegui.desktop
 wget -O /usr/bin/mountHomePrompt.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mountHomePrompt.sh
 wget -O /usr/bin/mountHomeGUI.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mountHomeGUI.sh
 wget -O /usr/bin/mountHome.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/mountHome.sh
@@ -39,11 +40,15 @@ chmod ugo+x /usr/bin/mountHome*.sh
 
 echo "/usr/bin/mountHomePrompt.sh" /etc/skel/.profile
 
+wget -O /etc/cron.hourly/logout_stale.sh http://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/focal_install/o405-uxx/logout_stale.sh
+chmod u+x /usr/cron.hourly/logout_stale.sh
+
 # Build custom ROS stuff for now
 mkdir -p ros_ws/src
 cd ros_ws/src
 git clone https://github.com/cwru-eecs-275/stdr_simulator.git
 git clone https://github.com/cwru-eecs-373/cwru_ariac_2019.git
+git clone https://github.com/cwru-eecs-373/ecse_373_ariac.git
 
 cd ../
 
