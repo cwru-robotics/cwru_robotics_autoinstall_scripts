@@ -8,8 +8,6 @@ This package is still under development.  These scripts are not well verified at
 
 As of Ubuntu 20.04, [Ubuntu Server](https://ubuntu.com/download/server) can use an auto-installation mechanism that includes being able to retrieve the installation configuration from the internet.  Ubuntu Server can be converted into Ubuntu Desktop by installing the `ubuntu-desktop` package.  More information about how to create and use the autoinstall capabilities of Ubuntu Server can be found on the [Ubuntu website](https://ubuntu.com/server/docs/install/autoinstall).
 
-This repository will have directories for various types of installations.  The autoinstall requires the URI of the location of the **RAW** `user-data` and `meta-data` files.  The URL is [`raw.githubusercontent.com`](http://raw.githubusercontent.com), not [`github.com`](https://github.com).
-
 The bootloader could be either the graphical or the command line version of Grub2.  The Linux kernel command line must be edited in either version to use the `autoinstall` script.  The way to get to the place to edit the command line in the two Grub versions differs.  There is no way to determine which will appear beforehand.  When booting using the Ubuntu Server Live CD, hold the `Shift` key down.  The bootloader menu should come up.
 
 - Graphical Grub
@@ -25,13 +23,13 @@ In either instance, there should be three dashes, `---`.  After the dashes add t
 
 It is also possible to use an autoinstall script directly from the GitHub repository:
 
-> `autoinstall 'ds=nocloud-net;s=https://raw.githubusercontent.com/cwru-robotics/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/;h=<new_hostname>'` 
+> `autoinstall 'ds=nocloud-net;s=https://cwru-robotics.github.io/cwru_robotics_autoinstall_scripts/<linux_name>/<install_type>/;h=<new_hostname>'` 
 
 ### Failed Attempt
 
 If the installation shows a menu to select the language for the installation, the autoinstallation has failed.  Before trying again review the logs.  
 
-While the language selection option is still up, press CTRL+ALT+F2.  This switches to a second virtual termina and a command prompt should come up.  Review the error log for the cloud-init autoinstallation with the following command: `less /var/log/cloud-init.log`.  Look through the file for references to the `meta-data` file downloaded from the URL above.  That file is downloaded first.  If it is not there, the problem is with contacting the server holding the files (GitHub).  If it is there, check just after it to verify that the `user-data` file was downloaded successfully.  If they are both downloaded, that indicates the problem is with the `user-data` file.  It would be unusual for `meta-data` to have downloaded successfully and `user-data` to have failed. 
+While the language selection option is still up, press CTRL+ALT+F2.  This switches to a second virtual terminal and a command prompt should come up.  Review the error log for the cloud-init autoinstallation with the following command: `less /var/log/cloud-init.log`.  Look through the file for references to the `meta-data` file downloaded from the URL above.  That file is downloaded first.  If it is not there, the problem is with contacting the server holding the files (GitHub).  If it is there, check just after it to verify that the `user-data` file was downloaded successfully.  If they are both downloaded, that indicates the problem is with the `user-data` file.  It would be unusual for `meta-data` to have downloaded successfully and `user-data` to have failed. 
 
 It may be necessary to review the syslog as well: `less /var/log/syslog`.  The kernel command line parameters can be found in this file.  Check to see that the autoinstall line shown above is complete and accurate in this file.
 
