@@ -22,7 +22,7 @@ snap install firefox gnome-3-38-2004 gtk-common-themes snap-store snapd-desktop-
 
 # Add ROS repository
 echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
-curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+wget -q https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc -O - | sudo apt-key add -
 apt update
 
 # Install ROS and supporting packages
