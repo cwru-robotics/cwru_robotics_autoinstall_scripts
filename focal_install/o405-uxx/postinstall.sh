@@ -31,13 +31,21 @@ snap install --classic code
 
 #### EXTRA ROS REPOSITORIES ####
 
+# Add cwru-ecse-373 repository
+wget -q https://cwru-ecse-373.github.io/cwru-ecse-373.asc -O - | apt-key add -
+apt-add-repository https://cwru-ecse-373.github.io/repo
+
 # Add cwru-ecse-376 repository
 wget -q https://cwru-ecse-376.github.io/cwru-ecse-376.asc -O - | apt-key add -
 apt-add-repository https://cwru-ecse-376.github.io/repo
 apt update
 
-# Install stuff from new repository
-apt install -y -qq ros-noetic-stdr-simulator
+# Add Gazebo repository
+wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
+
+# Install stuff from new repositories
+apt install -y -qq ros-noetic-stdr-simulator ros-noetic-osrf-gear ros-noetic-ur-kinematics ros-noetic-cwru-ecse-373
 
 #### BASIC CONFIGURAIONS ####
 
@@ -53,17 +61,17 @@ mkdir /etc/skel/.config/update-notifier
 
 #### CAMPUS GLENNAN FIFTH FLOOR COMPUTER LAB CONFIGURATIONS ####
 
-# # Logout stale users
-# echo '#!/usr/bin/env sh' > /etc/cron.hourly/logout_stale.sh
-# echo "kill -9 `who -u | gawk '/old/ {print $6}' - `" >> /etc/cron.hourly/logout_stale.sh
+# Logout stale users
+echo '#!/usr/bin/env sh' > /etc/cron.hourly/logout_stale.sh
+echo "kill -9 `who -u | gawk '/old/ {print $6}' - `" >> /etc/cron.hourly/logout_stale.sh
 
-# # Add logout script
-# # Update the logout script everytime in case it changed
-# echo "cp /etc/skel/.bash_logout ~/" >> /etc/bash.bashrc
+# Add logout script
+# Update the logout script everytime in case it changed
+echo "cp /etc/skel/.bash_logout ~/" >> /etc/bash.bashrc
 # # Remove the build directory for ariac (hopefully obsolete)
 # echo "rm -rf /tmp/ariac >/dev/null 2>/dev/null & disown" >> /etc/skel/.bash_logout
-# # Make sure every thing ROS (and Gazebo) related is killed when logging out
-# echo "killall roslaunch roscore gzserver gzclient >/dev/null 2>/dev/null & disown" >> /etc/skel/.bash_logout
+# Make sure every thing ROS (and Gazebo) related is killed when logging out
+echo "killall roslaunch roscore gzserver gzclient >/dev/null 2>/dev/null & disown" >> /etc/skel/.bash_logout
 
 # # # Add saabd drive
 # # mkdir /mgc
