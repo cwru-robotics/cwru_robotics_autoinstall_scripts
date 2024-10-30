@@ -21,7 +21,7 @@ wget -q https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc -O - | su
 apt update
 
 # Install ROS and supporting packages
-apt install -y -qq git ros-noetic-desktop-full python3-rosdep 
+apt install -y -qq git ros-noetic-desktop-full ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-gazebo-ros-control python3-rosdep 
 snap install --classic code 
 
 #### EXTRA CWRU ROS REPOSITORIES and GAZEBO REPOSITORY ####
@@ -57,6 +57,10 @@ mkdir /etc/skel/.config
 echo "yes" >> /etc/skel/.config/gnome-initial-setup-done
 mkdir /etc/skel/.config/update-notifier
 
+# Make Python work correctly with ROS.
+apt install update-alternatives
+update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+update-alternatives --install /usr/bin/python python /usr/bin/python3 2
 
 #### CAMPUS GLENNAN FIFTH FLOOR COMPUTER LAB CONFIGURATIONS ####
 
