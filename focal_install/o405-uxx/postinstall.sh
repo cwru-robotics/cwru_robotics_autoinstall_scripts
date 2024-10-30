@@ -45,7 +45,7 @@ wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 
 # Install stuff from new repositories
-apt install -y -qq ros-noetic-stdr-simulator ros-noetic-osrf-gear ros-noetic-ur-kinematics ros-noetic-cwru-ecse-373
+apt install -y -qq ros-noetic-stdr-simulator ros-noetic-osrf-gear ros-noetic-ur-kinematics ros-noetic-ecse-373-ariac
 
 #### BASIC CONFIGURAIONS ####
 
